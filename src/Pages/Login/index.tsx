@@ -13,6 +13,7 @@ import { loginService } from "../../Services";
 import { storeToken, storeUser } from "../../utils/localStorage";
 import toast, { Toaster } from "react-hot-toast";
 import { Style } from "./style";
+import { Images } from "../../Assets/Images";
 
 const CssTextField = styled(TextField)({
     "& label.Mui-focused": {
@@ -85,7 +86,7 @@ const Login = () => {
     return (
         <Grid container>
             <Grid lg={4.5} md={4.5} sx={Style.grid}>
-
+            <img src={Images.Logo} style={{padding:"40px 0"}}/>
             </Grid>
             <Grid lg={7.5} md={7.5} sm={12} xs={12} sx={{padding: "0 10px"}}>
             <Toaster toastOptions={{ duration: 4000 }} />
