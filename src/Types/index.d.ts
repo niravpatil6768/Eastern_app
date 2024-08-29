@@ -10,3 +10,9 @@ export interface DataItem {
         name: string;
     }
   }
+
+export  interface RootState {
+    reducer: {
+      users: DataItem[];
+    };
+  }  

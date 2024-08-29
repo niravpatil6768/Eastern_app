@@ -1,0 +1,1 @@
+export const STORE_DATA = "store_data";

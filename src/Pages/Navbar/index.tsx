@@ -25,11 +25,20 @@ import EmailIcon from '@mui/icons-material/Email';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import Swal from "sweetalert2";
 
+
 export default function Navbar() {
-  const User = getUser();
-  const navigate = useNavigate();
-  console.log(User);
+  const [user, setUser] = React.useState<any>(null);
   const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await getUser(); // Assuming getUser returns a promise
+      setUser(userData);
+    };
+
+    fetchUser();
+  }, []);
 
   const toggleDrawer = (newOpen: boolean | ((prevState: boolean) => boolean)) => () => {
     setOpen(newOpen);
@@ -39,70 +48,65 @@ export default function Navbar() {
     Swal.fire({
       title: "Are you sure you want to logout?",
       showDenyButton: true,
-      // showCancelButton: true,
       confirmButtonText: "Yes",
-      // denyButtonText: `Don't save`
       customClass: {
-        confirmButton: "btnlogoutconfirm", // Custom class for confirm button
-        denyButton: "btnlogoutdeny", // Custom class for deny button
+        confirmButton: "btnlogoutconfirm",
+        denyButton: "btnlogoutdeny",
       },
     }).then((result) => {
       if (result.isConfirmed) {
         ClearData();
         navigate("/");
-      } else if (result.isDenied) {
       }
     });
-  }
+  };
 
   const DrawerList = (
     <Box sx={{ width: 350 }} role="presentation" onClick={toggleDrawer(false)}>
-      <h2 style={{margin:"20px 20px"}}>User Profile</h2>
+      <h2 style={{ margin: "20px 20px" }}>User Profile</h2>
       <Divider />
       <List>
-          <ListItem disablePadding sx={{display:"flex", flexDirection:"column", alignItems:"start"}}>
-            <ListItemButton sx={{display:"flex", justifyContent:"flex-start"}}>
-              <ListItemIcon>
-                <PersonIcon sx={{fontSize:"2rem"}}/>
-              </ListItemIcon>
-              <ListItemText >
-                <Typography sx={{fontSize:"1.2rem"}}>
-                {User.name}
-                </Typography>
-              </ListItemText>
-            </ListItemButton>
-            <ListItemButton sx={{display:"flex", justifyContent:"flex-start"}}>
-              <ListItemIcon>
-                <EmailIcon sx={{fontSize:"2rem"}}/>
-              </ListItemIcon>
-              <ListItemText>
-                <Typography sx={{fontSize:"1.2rem"}}>
-                {User.email}
-                </Typography>
-              </ListItemText>
-            </ListItemButton>
-            <ListItemButton sx={{display:"flex", justifyContent:"flex-start"}}>
-              <ListItemIcon>
-                <VerifiedUserIcon sx={{fontSize:"1.8rem", marginLeft:"2px"}}/>
-              </ListItemIcon>
-              <ListItemText>
-                <Typography sx={{fontSize:"1.2rem"}}>
-                {User.role.name}
-                </Typography>
-              </ListItemText>
-            </ListItemButton>
-          </ListItem>
-            <Divider />
-          <ListItem sx={{display:"flex", flexDirection:"column", alignItems:"center"}}>
-            <Button onClick={() => Logout()} fullWidth sx={{backgroundColor:Colors.primary, color: "white", padding: "2%", margin:"20px 0"}}>
-              Sign out
-            </Button>
-            </ListItem>  
+        <ListItem disablePadding sx={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+          <ListItemButton sx={{ display: "flex", justifyContent: "flex-start" }}>
+            <ListItemIcon>
+              <PersonIcon sx={{ fontSize: "2rem" }} />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography sx={{ fontSize: "1.2rem" }}>
+                {user?.name}
+              </Typography>
+            </ListItemText>
+          </ListItemButton>
+          <ListItemButton sx={{ display: "flex", justifyContent: "flex-start" }}>
+            <ListItemIcon>
+              <EmailIcon sx={{ fontSize: "2rem" }} />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography sx={{ fontSize: "1.2rem" }}>
+                {user?.email}
+              </Typography>
+            </ListItemText>
+          </ListItemButton>
+          <ListItemButton sx={{ display: "flex", justifyContent: "flex-start" }}>
+            <ListItemIcon>
+              <VerifiedUserIcon sx={{ fontSize: "1.8rem", marginLeft: "2px" }} />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography sx={{ fontSize: "1.2rem" }}>
+                {user?.role?.name}
+              </Typography>
+            </ListItemText>
+          </ListItemButton>
+        </ListItem>
+        <Divider />
+        <ListItem sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <Button onClick={() => Logout()} fullWidth sx={{ backgroundColor: Colors.primary, color: "white", padding: "2%", margin: "20px 0" }}>
+            Sign out
+          </Button>
+        </ListItem>
       </List>
-      
     </Box>
   );
-
 
   return (
     <Grid
@@ -122,12 +126,9 @@ export default function Navbar() {
       <AppBar
         position="static"
         sx={{
-          // height: window.innerWidth > 900 ? "90px" : "70px",
           backgroundColor: Colors.primary,
           boxShadow: "none",
-          // maxWidth: "1400px",
           width: "100%",
-          // padding: window.innerWidth > 1365 ? "0 8% 0 10%" : "0 7% 0 7%",
           paddingLeft:
             window.innerWidth > 900 && window.innerWidth < 1100 ? "3%" : "3%",
           paddingRight:
@@ -151,21 +152,21 @@ export default function Navbar() {
               paddingRight: 0,
             }}
           >
-            <Box sx={{display: {lg: 'flex', md:"flex", sm: "none", xs: "none"}}}>
-            <Typography sx={{ fontSize: "1.2rem" }}>User Management</Typography>
+            <Box sx={{ display: { lg: 'flex', md: "flex", sm: "none", xs: "none" } }}>
+              <Typography sx={{ fontSize: "1.2rem" }}>User Management</Typography>
             </Box>
             <Button onClick={toggleDrawer(true)}>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <Typography sx={{ fontSize: "1.2rem", marginRight: "10px", color:"white" }}>
-                <span style={{ color: "lightgrey" }}>Hi, </span>
-                {User.name}
-              </Typography>
-              <AccountCircleIcon style={{ fontSize: "3rem", color:"white" }} />
-            </div>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Typography sx={{ fontSize: "1.2rem", marginRight: "10px", color: "white" }}>
+                  <span style={{ color: "lightgrey" }}>Hi, </span>
+                  {user?.name}
+                </Typography>
+                <AccountCircleIcon style={{ fontSize: "3rem", color: "white" }} />
+              </div>
             </Button>
-      <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
-        {DrawerList}
-      </Drawer>
+            <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
+              {DrawerList}
+            </Drawer>
           </Box>
         </Toolbar>
       </AppBar>
