@@ -22,6 +22,7 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
+import CloseIcon from '@mui/icons-material/Close';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import Swal from "sweetalert2";
 
@@ -45,6 +46,7 @@ export default function Navbar() {
   };
 
   const Logout = () => {
+    setOpen(false);
     Swal.fire({
       title: "Are you sure you want to logout?",
       showDenyButton: true,
@@ -62,45 +64,52 @@ export default function Navbar() {
   };
 
   const DrawerList = (
-    <Box sx={{ width: 350 }} role="presentation" onClick={toggleDrawer(false)}>
-      <h2 style={{ margin: "20px 20px" }}>User Profile</h2>
+    <Box sx={{ width: 350, backgroundColor: "#f4f4f4" }} role="presentation">
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 20px', backgroundColor: "#1976d2" }}>
+        <Typography variant="h6" sx={{ color: "#fff", fontWeight: 'bold' }}>
+          User Profile
+        </Typography>
+        <IconButton onClick={toggleDrawer(false)}>
+          <CloseIcon sx={{ color: "#fff" }} />
+        </IconButton>
+      </Box>
       <Divider />
       <List>
-        <ListItem disablePadding sx={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
-          <ListItemButton sx={{ display: "flex", justifyContent: "flex-start" }}>
+        <ListItem disablePadding sx={{ flexDirection: "column", alignItems: "start", padding: '10px 20px' }}>
+          <ListItemButton sx={{ display: "flex", justifyContent: "flex-start", backgroundColor: "#e3f2fd", borderRadius: "5px", marginBottom: "10px" }}>
             <ListItemIcon>
-              <PersonIcon sx={{ fontSize: "2rem" }} />
+              <PersonIcon sx={{ fontSize: "2.5rem", color: "#1976d2" }} />
             </ListItemIcon>
             <ListItemText>
-              <Typography sx={{ fontSize: "1.2rem" }}>
+              <Typography sx={{ fontSize: "1.4rem", fontWeight: '500', color: "#424242" }}>
                 {user?.name}
               </Typography>
             </ListItemText>
           </ListItemButton>
-          <ListItemButton sx={{ display: "flex", justifyContent: "flex-start" }}>
+          <ListItemButton sx={{ display: "flex", justifyContent: "flex-start", backgroundColor: "#e3f2fd", borderRadius: "5px", marginBottom: "10px" }}>
             <ListItemIcon>
-              <EmailIcon sx={{ fontSize: "2rem" }} />
+              <EmailIcon sx={{ fontSize: "2.5rem", color: "#1976d2" }} />
             </ListItemIcon>
             <ListItemText>
-              <Typography sx={{ fontSize: "1.2rem" }}>
+              <Typography sx={{ fontSize: "1.4rem", fontWeight: '500', color: "#424242" }}>
                 {user?.email}
               </Typography>
             </ListItemText>
           </ListItemButton>
-          <ListItemButton sx={{ display: "flex", justifyContent: "flex-start" }}>
+          <ListItemButton sx={{ display: "flex", justifyContent: "flex-start", backgroundColor: "#e3f2fd", borderRadius: "5px" }}>
             <ListItemIcon>
-              <VerifiedUserIcon sx={{ fontSize: "1.8rem", marginLeft: "2px" }} />
+              <VerifiedUserIcon sx={{ fontSize: "2rem", color: "#1976d2", marginLeft: "2px" }} />
             </ListItemIcon>
             <ListItemText>
-              <Typography sx={{ fontSize: "1.2rem" }}>
+              <Typography sx={{ fontSize: "1.4rem", fontWeight: '500', color: "#424242" }}>
                 {user?.role?.name}
               </Typography>
             </ListItemText>
           </ListItemButton>
         </ListItem>
         <Divider />
-        <ListItem sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <Button onClick={() => Logout()} fullWidth sx={{ backgroundColor: Colors.primary, color: "white", padding: "2%", margin: "20px 0" }}>
+        <ListItem sx={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "20px" }}>
+          <Button onClick={() => Logout()} fullWidth sx={{ backgroundColor: "#d32f2f", color: "white", padding: "10px 20px", borderRadius: "8px" }}>
             Sign out
           </Button>
         </ListItem>

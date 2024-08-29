@@ -192,6 +192,10 @@ const AddUser = () => {
     setShowPass(!showPass);
   };
 
+  const CancelForm = () => {
+    resetForm();
+  }
+
   return (
     <>
       <Navbar />
@@ -578,12 +582,20 @@ const AddUser = () => {
                     sx={{
                       padding: "0.8rem 2rem",
                       backgroundColor: "#1976d2",
-                      "&:hover": {
-                        border: "1.7px solid #1976d2",
-                      },
                     }}
                   >
                     Submit
+                  </Button>
+                  <Button 
+                  onClick={() => CancelForm()}
+                    variant="contained"
+                    sx={{
+                      padding: "0.8rem 2rem",
+                      backgroundColor: "grey",
+                      marginLeft: "10px",
+                    }}
+                  >
+                Cancel
                   </Button>
                 </Grid>
               )}
@@ -603,9 +615,6 @@ const AddUser = () => {
                     sx={{
                       padding: "0.8rem 2rem",
                       backgroundColor: "#1976d2",
-                      "&:hover": {
-                        border: "1.7px solid #1976d2",
-                      },
                     }}
                   >
                     Update
