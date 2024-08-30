@@ -4,6 +4,7 @@ import {
   DeleteSingleUser,
   fetchData,
   fetchDataBySearch,
+  fetchDataBySort,
 } from "../../Services";
 import {
   Box,
@@ -14,6 +15,7 @@ import {
   FormControlLabel,
   Grid,
   LinearProgress,
+  Menu,
   MenuItem,
   Popover,
   Select,
@@ -40,6 +42,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { Delete, Edit, Visibility } from "@mui/icons-material";
+import SortIcon from "@mui/icons-material/Sort";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { saveAs } from "file-saver";
@@ -63,12 +66,16 @@ const HomePage = () => {
   const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(
     null
   );
+  const [sortAnchorEl, setSortAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isAllSelected, setIsAllSelected] = useState(false);
   const [triggerFetch, setTriggerFetch] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [anchorEl1, setAnchorEl1] = useState(null);
+  const [selectedOption, setSelectedOption] = useState([]);
 
   const [filterOption, setFilterOption] = useState("");
+  const [sortOption, setSortOption] = useState("");
   const [columns, setColumns] = useState({
     name: true,
     email: true,
@@ -135,6 +142,20 @@ const HomePage = () => {
     []
   );
 
+  const sortFilter = async () => {
+    console.log(sortOption);
+    setLoading(true);
+    try {
+      const res = await fetchDataBySort(sortOption);
+      // setData(result.data.data);
+      dispatch(storeData(res.data.data));
+    } catch (error) {
+      console.error("Error in sort data: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleVisibilityClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
@@ -146,11 +167,20 @@ const HomePage = () => {
   const handleClose = () => {
     setAnchorEl(null);
     setFilterAnchorEl(null);
+    setSortAnchorEl(null);
+  };
+
+  const handleSortClick = (event: React.MouseEvent<HTMLElement>) => {
+    setSortAnchorEl(sortAnchorEl ? null : event.currentTarget);
   };
 
   // Handlers for filter options
   const handleFilterChange = (event: SelectChangeEvent<string>) => {
     setFilterOption(event.target.value);
+  };
+
+  const handleSortChange = (event: SelectChangeEvent<string>) => {
+    setSortOption(event.target.value);
   };
 
   const applyFilter = () => {
@@ -315,6 +345,16 @@ const HomePage = () => {
     page * rowsPerPage + rowsPerPage
   );
 
+  const handleClick = (event: {
+    currentTarget: React.SetStateAction<HTMLElement | null>;
+  }) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose1 = () => {
+    setAnchorEl1(null);
+  };
+
   return (
     <>
       <Navbar />
@@ -346,6 +386,15 @@ const HomePage = () => {
               sx={{ mr: 1 }}
             >
               <FilterAltIcon />
+            </Button>
+          </Tooltip>
+          <Tooltip title="Sort">
+            <Button
+              aria-describedby={sortAnchorEl ? "sort-popover" : undefined}
+              onClick={handleSortClick}
+              sx={{ mr: 1 }}
+            >
+              <SortIcon />
             </Button>
           </Tooltip>
           <Tooltip title="Add">
@@ -404,6 +453,36 @@ const HomePage = () => {
               </Button>
               <Button onClick={removeFilter} sx={{ mt: 1 }}>
                 Remove Filter
+              </Button>
+            </FormControl>
+          </Paper>
+        </Popover>
+
+        {/* Sort Popover */}
+        <Popover
+          id="sort-popover"
+          open={Boolean(sortAnchorEl)}
+          anchorEl={sortAnchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+        >
+          <Paper sx={{ padding: 2 }}>
+            <FormControl fullWidth>
+              <Select
+                value={sortOption}
+                variant="standard"
+                onChange={handleSortChange}
+                displayEmpty
+                renderValue={(selected) => (selected ? selected : "Sort By")}
+              >
+                <MenuItem value="name">Name</MenuItem>
+                <MenuItem value="email">Email</MenuItem>
+              </Select>
+              <Button onClick={sortFilter} sx={{ mt: 1, mr: 1 }}>
+                Sort Data
               </Button>
             </FormControl>
           </Paper>

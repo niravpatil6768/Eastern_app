@@ -35,6 +35,16 @@ export const fetchDataBySearch = async (value?: string) => {
       }
 }
 
+export const fetchDataBySort = async (value?: string) => {
+    try {
+        const response = await axiosInstance.get(`${BASE_URL}users?sort=${value}&order_by=asc`);
+        console.log(response);
+        return response;
+    } catch (error) {
+        throw error;
+      }
+}
+
 export const deleteMultiService = async (value: any) => {
     try {
         const response = await axiosInstance.post(`${BASE_URL}users-delete-multiple`, value)
