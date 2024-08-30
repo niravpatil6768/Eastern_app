@@ -51,8 +51,8 @@ import { storeData } from "../../Redux/action";
 const PAGE_SIZE = 10;
 
 const HomePage = () => {
-    const users = useSelector((store: RootState) => store.reducer.users);
-  const navigate = useNavigate();;
+  const users = useSelector((store: RootState) => store.reducer.users);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [mainData, setMainData] = useState<DataItem[]>([]);
   const [page, setPage] = useState(0);
@@ -79,7 +79,6 @@ const HomePage = () => {
   });
 
   const [progress, setProgress] = React.useState(0);
-  
 
   React.useEffect(() => {
     const timer = setInterval(() => {
@@ -99,7 +98,7 @@ const HomePage = () => {
 
   useEffect(() => {
     setData(users);
-    console.log('Users state:', users);
+    console.log("Users state:", users);
   }, [users]);
 
   useEffect(() => {
@@ -109,7 +108,7 @@ const HomePage = () => {
         const res = await fetchData();
         console.log(res.data.data);
         // setData(res.data.data);
-        dispatch(storeData(res.data.data))
+        dispatch(storeData(res.data.data));
         // setMainData(res.data.data);
       } catch (error) {
         console.error("Error in fetch users", error);
@@ -119,7 +118,7 @@ const HomePage = () => {
       }
     };
     getUsers();
-  }, [dispatch,triggerFetch]);
+  }, [dispatch, triggerFetch]);
 
   const searchFilter = useCallback(
     _.debounce(async (value: string) => {
@@ -136,8 +135,6 @@ const HomePage = () => {
     []
   );
 
-
-  
   const handleVisibilityClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
@@ -299,16 +296,24 @@ const HomePage = () => {
     exportToCSV(data, "exported_data.csv");
   };
 
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-  const paginatedData = data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const paginatedData = data.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   return (
     <>
@@ -440,7 +445,10 @@ const HomePage = () => {
       {/* <Grid container style={Style.grid1}>
         <h1>User List</h1>
       </Grid> */}
-      <Grid container sx={{ padding: window.innerWidth > 700 ? "20px 40px" : "20px 20px"}}>
+      <Grid
+        container
+        sx={{ padding: window.innerWidth > 700 ? "20px 40px" : "20px 20px" }}
+      >
         <TableContainer component={Paper}>
           <Box sx={{ width: "100%" }}>
             {loading && (
@@ -537,15 +545,19 @@ const HomePage = () => {
             </TableBody>
           </Table>
           <TablePagination
-          rowsPerPageOptions={[PAGE_SIZE]}
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          sx={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}
-        />
+            rowsPerPageOptions={[PAGE_SIZE]}
+            component="div"
+            count={data.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              padding: "10px",
+            }}
+          />
         </TableContainer>
       </Grid>
     </>

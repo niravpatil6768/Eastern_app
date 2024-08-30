@@ -41,10 +41,10 @@ import UpdateUserSchema from "../../Schemas/UpdateUserSchema";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import dayjs, { Dayjs } from 'dayjs';
-import { useFormikContext } from "formik";
-import { JSX } from "react/jsx-runtime";
+import dayjs, { Dayjs } from "dayjs";
+import toast, { Toaster } from "react-hot-toast";
 import { Style } from "./style";
+import { format } from "date-fns";
 
 const CssTextField = styled(TextField)({
   "& label.Mui-focused": {
@@ -158,6 +158,10 @@ const AddUser = () => {
           console.log(res);
 
           if (res.status === 200) {
+            toast.success("User Created!", {
+              duration: 5000, // Duration in milliseconds
+              position: "top-right", // Position of the toast
+            });
             console.log("user created!: ", res);
             resetForm();
             navigate("/dashboard");
@@ -165,10 +169,20 @@ const AddUser = () => {
             if (fileInputRef2.current) fileInputRef2.current.value = "";
             if (fileInputRef3.current) fileInputRef3.current.value = "";
             if (fileInputRef4.current) fileInputRef4.current.value = "";
+          } else {
+            console.log("error");
+            toast.error("Try Again to create user", {
+              duration: 5000, // Duration in milliseconds
+              position: "top-right", // Position of the toast
+            });
           }
         }
       } catch (error) {
         console.error("error in submit user", error);
+        toast.error("please check your form again", {
+          duration: 5000, // Duration in milliseconds
+          position: "top-right", // Position of the toast
+        });
         throw error;
       }
     },
@@ -194,12 +208,13 @@ const AddUser = () => {
 
   const CancelForm = () => {
     resetForm();
-  }
+  };
 
   return (
     <>
       <Navbar />
       <Grid container style={{ backgroundColor: "", height: "105px" }}></Grid>
+      <Toaster toastOptions={{ duration: 4000 }} />
       <Box sx={{ padding: "1rem" }}>
         <Paper
           elevation={3}
@@ -230,10 +245,7 @@ const AddUser = () => {
                   sx={{ backgroundColor: "white" }}
                 />
                 {touched.name && errors.name && (
-                  <h5
-                  style={Style.error}
-                    className="form-error"
-                  >
+                  <h5 style={Style.error} className="form-error">
                     {errors.name}
                   </h5>
                 )}
@@ -255,10 +267,7 @@ const AddUser = () => {
                   sx={{ backgroundColor: "white" }}
                 />
                 {touched.email && errors.email && (
-                  <h5
-                  style={Style.error}
-                    className="form-error"
-                  >
+                  <h5 style={Style.error} className="form-error">
                     {errors.email}
                   </h5>
                 )}
@@ -269,7 +278,7 @@ const AddUser = () => {
                   <TextField
                     fullWidth
                     size="small"
-                    type="password"
+                    type={showPass ? "text" : "password"}
                     label="Enter Password"
                     variant="standard"
                     name="password"
@@ -279,12 +288,30 @@ const AddUser = () => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     sx={{ backgroundColor: "white", marginTop: "1rem" }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment
+                          position="start"
+                          onClick={handleShowPass}
+                        >
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleShowPass}
+                            edge="end"
+                            style={{ zIndex: 1 }}
+                          >
+                            {showPass ? (
+                              <Visibility style={{ fontSize: "1.6rem" }} />
+                            ) : (
+                              <VisibilityOff style={{ fontSize: "1.6rem" }} />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                   {touched.password && errors.password && (
-                    <h5
-                    style={Style.error}
-                      className="form-error"
-                    >
+                    <h5 style={Style.error} className="form-error">
                       {errors.password}
                     </h5>
                   )}
@@ -311,16 +338,13 @@ const AddUser = () => {
                   </Select>
                 </FormControl>
                 {touched.role_id && errors.role_id && (
-                  <h5
-                  style={Style.error}
-                    className="form-error"
-                  >
+                  <h5 style={Style.error} className="form-error">
                     {errors.role_id}
                   </h5>
                 )}
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              {/* <Grid item xs={12} md={6}>
           <TextField
                 fullWidth
                 size="small"
@@ -342,46 +366,44 @@ const AddUser = () => {
                 {errors.dob}
               </h5>
             )}
-        </Grid>
+        </Grid> */}
 
-{/* <Grid item xs={12} md={6}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          label="Enter DOB"
-          value={values.dob ? dayjs(values.dob) : null}
-          onChange={(newValue: Dayjs | null) => {
-            setFieldValue('dob', newValue ? newValue.format('YYYY-MM-DD') : '');
-          }}
-          renderInput : any={(params : any) => (
-            <TextField
-              {...params}
-              fullWidth
-              size="small"
-              variant="standard"
-              name="dob"
-              id="dob"
-              autoComplete="off"
-              onBlur={handleBlur}
-              sx={{ backgroundColor: 'white', marginTop: '1rem' }}
-            />
-          )}
-        />
-      </LocalizationProvider>
-      {touched.dob && errors.dob && (
-        <h5
-          style={{
-            marginTop: 2,
-            fontFamily: 'Avenir',
-            justifySelf: 'start',
-            display: 'flex',
-            color: 'red',
-          }}
-          className="form-error"
-        >
-          {errors.dob}
-        </h5>
-      )}
-    </Grid> */}
+              <Grid item xs={12} md={6}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Enter DOB"
+                    value={values.dob ? dayjs(values.dob) : null} // Ensure value is a Dayjs object or null
+                    onChange={(date: Dayjs | null) => {
+                      const formattedDate = date
+                        ? date.format("YYYY-MM-DD")
+                        : ""; // Handle null case
+                      setFieldValue("dob", formattedDate);
+                    }}
+                    slots={{
+                      textField: (textFieldProps) => (
+                        <TextField
+                          {...textFieldProps}
+                          fullWidth
+                          size="small"
+                          variant="standard"
+                          name="dob"
+                          id="dob"
+                          autoComplete="off"
+                          sx={{ backgroundColor: "white", marginTop: "1rem" }}
+                        />
+                      ),
+                    }}
+                  />
+                </LocalizationProvider>
+                {touched.dob && errors.dob && (
+              <h5
+              style={Style.error}
+                className="form-error"
+              >
+                {errors.dob}
+              </h5>
+            )}
+              </Grid>
 
               <Grid item xs={12} md={6}>
                 <TextField
@@ -402,10 +424,7 @@ const AddUser = () => {
                   onBlur={handleBlur}
                 />
                 {touched.profile && errors.profile && (
-                  <h5
-                    style={Style.error}
-                    className="form-error"
-                  >
+                  <h5 style={Style.error} className="form-error">
                     {errors.profile}
                   </h5>
                 )}
@@ -437,10 +456,7 @@ const AddUser = () => {
                   onBlur={handleBlur}
                 />
                 {touched.user_galleries && errors.user_galleries && (
-                  <h5
-                  style={Style.error}
-                    className="form-error"
-                  >
+                  <h5 style={Style.error} className="form-error">
                     {errors.user_galleries}
                   </h5>
                 )}
@@ -472,10 +488,7 @@ const AddUser = () => {
                   onBlur={handleBlur}
                 />
                 {touched.user_pictures && errors.user_pictures && (
-                  <h5
-                  style={Style.error}
-                    className="form-error"
-                  >
+                  <h5 style={Style.error} className="form-error">
                     {errors.user_pictures}
                   </h5>
                 )}
@@ -519,10 +532,7 @@ const AddUser = () => {
                   </RadioGroup>
                 </FormControl>
                 {touched.gender && errors.gender && (
-                  <h5
-                  style={Style.error}
-                    className="form-error"
-                  >
+                  <h5 style={Style.error} className="form-error">
                     {errors.gender}
                   </h5>
                 )}
@@ -557,10 +567,7 @@ const AddUser = () => {
                   />
                 </FormGroup>
                 {touched.status && errors.status && (
-                  <h5
-                  style={Style.error}
-                    className="form-error"
-                  >
+                  <h5 style={Style.error} className="form-error">
                     {errors.status}
                   </h5>
                 )}
@@ -579,6 +586,7 @@ const AddUser = () => {
                   <Button
                     type="submit"
                     variant="contained"
+                    disabled={!(isValid)}
                     sx={{
                       padding: "0.8rem 2rem",
                       backgroundColor: "#1976d2",
@@ -586,8 +594,8 @@ const AddUser = () => {
                   >
                     Submit
                   </Button>
-                  <Button 
-                  onClick={() => CancelForm()}
+                  <Button
+                    onClick={() => CancelForm()}
                     variant="contained"
                     sx={{
                       padding: "0.8rem 2rem",
@@ -595,7 +603,7 @@ const AddUser = () => {
                       marginLeft: "10px",
                     }}
                   >
-                Cancel
+                    Cancel
                   </Button>
                 </Grid>
               )}

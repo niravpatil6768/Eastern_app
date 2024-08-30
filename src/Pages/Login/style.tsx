@@ -4,6 +4,7 @@ import Colors from "../../Assets/Colors";
 export const Style = {
   grid: {
     // backgroundColor: Colors.primary,
+    display: {xs: "none", sm:"none", md:"flex", lg:"flex"},
     background:
                "linear-gradient(to bottom,  #007190, white)",
   },
